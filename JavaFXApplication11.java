@@ -1,11 +1,7 @@
 package JavaFXApplication11;
 
-import com.sun.javafx.scene.control.skin.ComboBoxPopupControl;
-import java.awt.Choice;
-import java.awt.event.MouseEvent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,18 +9,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javax.swing.JOptionPane;
 
 public class JavaFXApplication11 extends Application {
@@ -44,6 +40,8 @@ public class JavaFXApplication11 extends Application {
     //creat add&done
     Button B7;
     Button B8;
+    Button FeadBAck = new Button("FeadBack");
+
     Button BREG;
 
     // Cafeteria Cf=new Cafeteria();
@@ -55,15 +53,9 @@ public class JavaFXApplication11 extends Application {
     int p;
 
     ListView<String> lv;
-    private String[] flagtitles = {"product Name ---> ID",
-        "pizza --> 1",
-        "coffe --> 2",
-        "tea --> 3",
-        "biskets --> 4",
-        "ships --> 5",
-        "snadwich --> 6",
-        "choc --> 7"};
-    
+    private ArrayList<String> flagtitles = new ArrayList<>();
+    ArrayList<String> items = new ArrayList<>();
+
     //creat a pane
     GridPane root = new GridPane();
     GridPane pane = new GridPane();
@@ -71,6 +63,9 @@ public class JavaFXApplication11 extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
+
+        javafxapplication11.CafeteriaClient.connect();
+
         Button BE = new Button();
         BE.setText("ENTER");
         BREG = new Button();
@@ -88,7 +83,7 @@ public class JavaFXApplication11 extends Application {
         pane.add(tff, 1, 4);
         pane.add(BE, 1, 5);
         pane.add(BREG, 9, 5);
-        javafxapplication11.CafeteriaClient.connect();
+        pane.add(FeadBAck, 9, 6);
 
         BE.setOnAction((ActionEvent event1) -> {
             try {
@@ -136,14 +131,12 @@ public class JavaFXApplication11 extends Application {
             pane.add(l4, 7, 17);
             pane.add(tf4, 7, 18);
             pane.add(B8, 7, 19);
+            pane.add(FeadBAck, 9, 20);
 
             B8.setOnAction((ActionEvent event2) -> {
                 //get the name and the id and the pass and put it in db 
-                tf1.getText();
-                tf2.getText();
-                tf3.getText();
-                tf3.getText();
-               //get the type from vbox 
+
+                javafxapplication11.CafeteriaClient.registerNewUser(new Customer(tf1.getText(), tf2.getText(), tf7.getText(), tf6.getText(), tf5.getText()), tf3.getText());
 
                 //hide the elemnts 
                 l1.setVisible(false);
@@ -194,6 +187,7 @@ public class JavaFXApplication11 extends Application {
                 root.add(UI, 1, 4);
                 root.add(UM, 1, 6);
                 root.add(EP, 1, 8);
+                pane.add(FeadBAck, 1, 12);
 
                 //cleck on B1
                 BAS.setOnAction((ActionEvent event) -> {
@@ -243,6 +237,7 @@ public class JavaFXApplication11 extends Application {
                     root.add(tf3, 4, 10);
                     root.add(B7, 4, 13);
                     root.add(B8, 4, 14);
+                    pane.add(FeadBAck, 4, 16);
 
                     B7.setOnAction((ActionEvent event2) -> {
                         //get the sales man data bythe maneger 
@@ -308,6 +303,7 @@ public class JavaFXApplication11 extends Application {
 
                     root.add(B7, 4, 13);
                     root.add(B8, 4, 14);
+                    pane.add(FeadBAck, 4, 16);
 
                     B7.setOnAction((ActionEvent event0) -> {
                         //delete  the sales man data by the maneger 
@@ -362,9 +358,11 @@ public class JavaFXApplication11 extends Application {
 
                     root.add(B7, 8, 13);
                     root.add(B8, 8, 14);
+                    pane.add(FeadBAck, 8, 15);
 
                     B7.setOnAction((ActionEvent event1) -> {
                         //update the product with id :
+
                         tf1.getText();
 
                     });
@@ -406,6 +404,7 @@ public class JavaFXApplication11 extends Application {
 
                     root.add(B8, 3, 12);
                     root.add(B7, 3, 15);
+                    pane.add(FeadBAck, 3, 18);
 
                     lv = new ListView<>(FXCollections.observableArrayList(flagtitles));
                     lv.setPrefSize(300, 400);
@@ -466,6 +465,7 @@ public class JavaFXApplication11 extends Application {
 
                         B7.setVisible(false);
                         B8.setVisible(false);
+                        FeadBAck.setVisible(false);
 
                     });
 
@@ -491,6 +491,14 @@ public class JavaFXApplication11 extends Application {
                     B10.setText("update");
                     root.add(B7, 4, 13);
                     root.add(B10, 4, 14);
+                    try {
+                        for (int i = 0; i < javafxapplication11.CafeteriaClient.getProducts().size(); i++) {
+                            flagtitles.add(javafxapplication11.CafeteriaClient.getProducts().get(i).ProductName);
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(JavaFXApplication11.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                     lv = new ListView<>(FXCollections.observableArrayList(flagtitles));
                     lv.setPrefSize(150, 200);
                     lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -498,31 +506,54 @@ public class JavaFXApplication11 extends Application {
                     sp = new ScrollPane();
                     Bp.setLeft(new ScrollPane(lv));
                     root.add(Bp, 4, 12);
+                    root.add(FeadBAck, 4, 15);
 
-                    Bp.setOnMouseDragged((javafx.scene.input.MouseEvent e) -> {
-                        //add to cort 
+                    //add to cort 
+                    lv.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                        // change the label text value to the newly selected
+                        items.add(newValue);
                     });
+
                     B10.setOnAction((ActionEvent event1) -> {
-                        Bp.setOnMouseDragged((javafx.scene.input.MouseEvent e) -> {
-                            //add to cort 
+                        Bp.setOnMouseDragged((javafx.scene.input.MouseEvent ee) -> {
+                            try {
+                                for (int i = 0; i < javafxapplication11.CafeteriaClient.getProducts().size(); i++) {
+                                    flagtitles.add(javafxapplication11.CafeteriaClient.getProducts().get(i).ProductName);
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(JavaFXApplication11.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            lv.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                                // change the label text value to the newly selected
+                                items.add(newValue);
+                            });
                         });
                         Button B9 = new Button();
                         B9.setText("confirm");
                         B9.setOnAction((ActionEvent event8) -> {
                             //show the bill 
+                            for (int i = 0; i < items.size(); i++) {
+                                cort.add(new Label(items.get(i)), i, i + 1);
+                            }
                             B7.setVisible(false);
                             B10.setVisible(false);
                             Bp.setVisible(false);
+                            FeadBAck.setVisible(false);
+
                         });
                     });
 
                     B7.setOnAction((ActionEvent event1) -> {
 
                         //show the bill then hide  
+                        for (int i = 0; i < items.size(); i++) {
+                            cort.add(new Label(items.get(i)), i, i + 1);
+                        }
                         //hide the button
                         B7.setVisible(false);
                         B10.setVisible(false);
                         Bp.setVisible(false);
+                        FeadBAck.setVisible(false);
 
                     });
 
@@ -533,133 +564,156 @@ public class JavaFXApplication11 extends Application {
                 primaryStage.show();
                 break;
 
-            case (3):
-                //sales man 
-                Button BMO = new Button();
-                BMO.setText("Make order");
-                Button PI = new Button();
-                PI.setText("print inovices");
-                Button UA = new Button();
-                UA.setText("Update account ");
+//            case (3):
+//                //sales man 
+//                Button BMO = new Button();
+//                BMO.setText("Make order");
+//                Button PI = new Button();
+//                PI.setText("print inovices");
+//                Button UA = new Button();
+//                UA.setText("Update account ");
+//
+//                root.add(BMO, 4, 1);
+//                root.add(PI, 4, 15);
+//                root.add(FeadBAck, 4, 16);
+//
+//                BMO.setOnAction((ActionEvent event) -> {
+//
+//                    lv = new ListView<>(FXCollections.observableArrayList(flagtitles));
+//                    lv.setPrefSize(200, 250);
+//                    lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//                    Bp = new BorderPane();
+//                    sp = new ScrollPane();
+//                    Bp.setLeft(new ScrollPane(lv));
+//                    root.add(Bp, 4, 12);
+//
+//                    B8 = new Button();
+//                    B8.setText("Done!");
+//                    B7 = new Button();
+//                    B7.setText("ADD");
+//
+//                    //creating a labels
+//                    l1 = new Label("type of pay ");
+//                    l2 = new Label("Enter the Product ID");
+//                    l3 = new Label("Enter the Quantety");
+//                    l4 = new Label("Enter the tottal Price");
+//
+//                    //creating a textfield
+//                    tf1 = new TextField();
+//                    tf2 = new TextField();
+//                    tf3 = new TextField();
+//                    tf4 = new TextField();
+//
+//                    //put it on greed
+//                    root.add(l1, 20, 13);
+//                    root.add(tf1, 20, 14);
+//                    root.add(l2, 20, 7);
+//                    root.add(tf2, 20, 8);
+//                    root.add(l3, 20, 9);
+//                    root.add(tf3, 20, 10);
+//                    root.add(l4, 20, 11);
+//                    root.add(tf4, 20, 12);
+//                    root.add(B7, 20, 15);
+//                    root.add(B8, 20, 16);
+//                    root.add(FeadBAck, 20, 18);
+//
+//                    //cleck on B7
+//                    B7.setOnAction((ActionEvent event2) -> {
+//                        // add in DB
+//
+//                    });
+//                    B8.setOnAction((ActionEvent event1) -> {
+//
+//                        l1.setVisible(false);
+//                        l2.setVisible(false);
+//                        l3.setVisible(false);
+//                        l4.setVisible(false);
+//                        //hide the text filed
+//                        tf1.setVisible(false);
+//                        tf2.setVisible(false);
+//                        tf3.setVisible(false);
+//                        tf4.setVisible(false);
+//                        //hide the button
+//                        B7.setVisible(false);
+//                        B8.setVisible(false);
+//                        Bp.setVisible(false);
+//                        FeadBAck.setVisible(false);
+//
+//                    });
+//
+//                });
+//                PI.setOnAction((ActionEvent event) -> {
+//
+//                    B8 = new Button();
+//                    B8.setText("Done!");
+//                    B7 = new Button();
+//                    B7.setText("ADD");
+//                    // print invoices ask ??
+//                    B7.setOnAction((ActionEvent event2) -> {
+//
+//                    });
+//                    B8.setOnAction((ActionEvent event1) -> {
+//
+//                        B7.setVisible(false);
+//                        B8.setVisible(false);
+//                        FeadBAck.setVisible(false);
+//
+//                    });
+//                });
+//
+//                UA.setOnAction((ActionEvent event) -> {
+//
+//                    l1 = new Label("enter the account id ");
+//                    tf1 = new TextField();
+//                    B8 = new Button();
+//                    B8.setText("Done!");
+//                    B7 = new Button();
+//                    B7.setText("update");
+//                    // print invoices ask ??
+//                    B7.setOnAction((ActionEvent event2) -> {
+//                        //update by the id
+//                        tf1.getText();
+//                    });
+//                    B8.setOnAction((ActionEvent event1) -> {
+//
+//                        l1.setVisible(false);
+//
+//                        //hide the text filed
+//                        tf1.setVisible(false);
+//
+//                        //hide the button
+//                        B7.setVisible(false);
+//                        B8.setVisible(false);
+//                        FeadBAck.setVisible(false);
+//
+//                    });
+//                });
+//
+//                primaryStage.setTitle("Welcome!");
+//                primaryStage.setScene(scene);
+//                primaryStage.show();
+//                break;
+        }
 
-                root.add(BMO, 4, 1);
-                root.add(PI, 4, 15);
-
-                BMO.setOnAction((ActionEvent event) -> {
-
-                    lv = new ListView<>(FXCollections.observableArrayList(flagtitles));
-                    lv.setPrefSize(200, 250);
-                    lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                    Bp = new BorderPane();
-                    sp = new ScrollPane();
-                    Bp.setLeft(new ScrollPane(lv));
-                    root.add(Bp, 4, 12);
-
-                    B8 = new Button();
-                    B8.setText("Done!");
-                    B7 = new Button();
-                    B7.setText("ADD");
-
-                    //creating a labels
-                    l1 = new Label("type of pay ");
-                    l2 = new Label("Enter the Product ID");
-                    l3 = new Label("Enter the Quantety");
-                    l4 = new Label("Enter the tottal Price");
-
-                    //creating a textfield
-                    tf1 = new TextField();
-                    tf2 = new TextField();
-                    tf3 = new TextField();
-                    tf4 = new TextField();
-
-                    //put it on greed
-                    root.add(l1, 20, 13);
-                    root.add(tf1, 20, 14);
-                    root.add(l2, 20, 7);
-                    root.add(tf2, 20, 8);
-                    root.add(l3, 20, 9);
-                    root.add(tf3, 20, 10);
-                    root.add(l4, 20, 11);
-                    root.add(tf4, 20, 12);
-                    root.add(B7, 20, 15);
-                    root.add(B8, 20, 16);
-
-                    //cleck on B7
-                    B7.setOnAction((ActionEvent event2) -> {
-                        // add in DB
-
-                    });
-                    B8.setOnAction((ActionEvent event1) -> {
-
-                        l1.setVisible(false);
-                        l2.setVisible(false);
-                        l3.setVisible(false);
-                        l4.setVisible(false);
-                        //hide the text filed
-                        tf1.setVisible(false);
-                        tf2.setVisible(false);
-                        tf3.setVisible(false);
-                        tf4.setVisible(false);
-                        //hide the button
-                        B7.setVisible(false);
-                        B8.setVisible(false);
-                        Bp.setVisible(false);
-
-                    });
-
-                });
-                PI.setOnAction((ActionEvent event) -> {
-
-                    B8 = new Button();
-                    B8.setText("Done!");
-                    B7 = new Button();
-                    B7.setText("ADD");
-                    // print invoices ask ??
-                    B7.setOnAction((ActionEvent event2) -> {
-
-                    });
-                    B8.setOnAction((ActionEvent event1) -> {
-
-                        B7.setVisible(false);
-                        B8.setVisible(false);
-
-                    });
-                });
-
-                UA.setOnAction((ActionEvent event) -> {
-
-                    l1 = new Label("enter the account id ");
-                    tf1 = new TextField();
-                    B8 = new Button();
-                    B8.setText("Done!");
-                    B7 = new Button();
-                    B7.setText("update");
-                    // print invoices ask ??
-                    B7.setOnAction((ActionEvent event2) -> {
-                        //update by the id
-                        tf1.getText();
-                    });
-                    B8.setOnAction((ActionEvent event1) -> {
-
-                        l1.setVisible(false);
-
-                        //hide the text filed
-                        tf1.setVisible(false);
-
-                        //hide the button
-                        B7.setVisible(false);
-                        B8.setVisible(false);
-
-                    });
-                });
-
-                primaryStage.setTitle("Welcome!");
-                primaryStage.setScene(scene);
-                primaryStage.show();
-                break;
-
-        };
-
+        FeadBAck.setOnAction((ActionEvent event1) -> {
+            l1 = new Label("enter the feadback subject");
+            tf1 = new TextField();
+            l2 = new Label("enter the details");
+            tf2 = new TextField();
+            pane.add(l1, 1, 1);
+            pane.add(tf1, 1, 2);
+            pane.add(l2, 1, 3);
+            pane.add(tf2, 1, 4);
+            Button b = new Button("send");
+            pane.add(b, 1, 3);
+            b.setOnAction((ActionEvent event8) -> {
+                try {
+                    javafxapplication11.CafeteriaClient.addFeedback(tf1.getText(), tf2.getText());
+                } catch (IOException ex) {
+                    Logger.getLogger(JavaFXApplication11.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        });
     }
 
     public static void main(String[] args) {
