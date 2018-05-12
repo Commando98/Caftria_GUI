@@ -1,5 +1,7 @@
 package JavaFXApplication11;
 
+import com.sun.javafx.scene.control.skin.ComboBoxPopupControl;
+import java.awt.Choice;
 import java.awt.event.MouseEvent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -22,12 +24,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javax.swing.JOptionPane;
 
 public class JavaFXApplication11 extends Application {
-
-    //creat a scanner
-    Scanner sc;
 
     //creat a labels
     Label l1;
@@ -52,7 +52,8 @@ public class JavaFXApplication11 extends Application {
     BorderPane BP1;
     ScrollPane sp;
     ScrollPane sp1;
-int p;
+    int p;
+
     ListView<String> lv;
     private String[] flagtitles = {"product Name ---> ID",
         "pizza --> 1",
@@ -62,28 +63,19 @@ int p;
         "ships --> 5",
         "snadwich --> 6",
         "choc --> 7"};
-
-    ListView<String> LVD;
-    private String[] flagtitle = {"mohamed magdy",
-        "ahmed hesham ",
-        "ayman 3adel",
-        "mohamed kolief",
-        "yasser el sonbaty",
-        "mohammed shahin",
-        "zainb "};
+    
     //creat a pane
     GridPane root = new GridPane();
     GridPane pane = new GridPane();
     GridPane cort = new GridPane();
 
     @Override
-    public void start(final Stage primaryStage) {
-
+    public void start(final Stage primaryStage) throws Exception {
         Button BE = new Button();
         BE.setText("ENTER");
         BREG = new Button();
         BREG.setText("Regestration");
-        Label l = new Label("enter the name ");
+        Label l = new Label("enter the ID ");
         TextField tf = new TextField();
         Label ll = new Label("enter the pass ");
         TextField tff = new PasswordField();
@@ -96,8 +88,16 @@ int p;
         pane.add(tff, 1, 4);
         pane.add(BE, 1, 5);
         pane.add(BREG, 9, 5);
+        javafxapplication11.CafeteriaClient.connect();
+
         BE.setOnAction((ActionEvent event1) -> {
-            //get the user name and the pass then choose th type
+            try {
+                //get the user name and the pass then choose th type
+                p = javafxapplication11.CafeteriaClient.login(Integer.parseInt(tf.getText()), tf1.getText());
+            } catch (IOException ex) {
+                Logger.getLogger(JavaFXApplication11.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         });
 
         BREG.setOnAction((ActionEvent event1) -> {
@@ -108,11 +108,17 @@ int p;
             l2 = new Label("Enter the name");
             l3 = new Label("Enter the pass");
             l4 = new Label("Enter the type ");
+            Label l5 = new Label("Enter the Email ");
+            Label l6 = new Label("Enter the Mobile ");
+            Label l7 = new Label("Enter the Department ");
 
             tf1 = new TextField();
             tf2 = new TextField();
             tf3 = new PasswordField();
             tf4 = new TextField();
+            TextField tf5 = new TextField();
+            TextField tf6 = new TextField();
+            TextField tf7 = new TextField();
 
             //put it on greed
             pane.add(l1, 7, 5);
@@ -121,37 +127,48 @@ int p;
             pane.add(tf2, 7, 8);
             pane.add(l3, 7, 9);
             pane.add(tf3, 7, 10);
-            pane.add(l4, 7, 11);
-            pane.add(tf4, 7, 12);
-            pane.add(B8, 7, 14);
+            pane.add(l5, 7, 11);
+            pane.add(tf5, 7, 12);
+            pane.add(l6, 7, 13);
+            pane.add(tf6, 7, 14);
+            pane.add(l7, 7, 15);
+            pane.add(tf7, 7, 16);
+            pane.add(l4, 7, 17);
+            pane.add(tf4, 7, 18);
+            pane.add(B8, 7, 19);
 
             B8.setOnAction((ActionEvent event2) -> {
-                //get the name and the id and the pass and put it in db
-//                tf1.getText();
-//                tf2.getText();
-//                tf3.getText();
-//                tf4.getText();
+                //get the name and the id and the pass and put it in db 
+                tf1.getText();
+                tf2.getText();
+                tf3.getText();
+                tf3.getText();
+               //get the type from vbox 
 
-                //hide the elemnts
+                //hide the elemnts 
                 l1.setVisible(false);
                 l2.setVisible(false);
                 l3.setVisible(false);
                 l4.setVisible(false);
+                l5.setVisible(false);
+                l6.setVisible(false);
+                l7.setVisible(false);
                 //hide the text filed
                 tf1.setVisible(false);
                 tf2.setVisible(false);
                 tf3.setVisible(false);
                 tf4.setVisible(false);
+                tf5.setVisible(false);
+                tf6.setVisible(false);
+                tf7.setVisible(false);
                 //hide the button
                 B8.setVisible(false);
-
+                JOptionPane.showMessageDialog(null, "Now you can log in Yay!!");
             });
 
         });
         primaryStage.setScene(sc);
         primaryStage.show();
-
-
 
         switch (p) {
 
@@ -227,15 +244,15 @@ int p;
                     root.add(B7, 4, 13);
                     root.add(B8, 4, 14);
 
-                    B7.setOnAction((ActionEvent event1) -> {
-                        //get the sales man data bythe maneger
+                    B7.setOnAction((ActionEvent event2) -> {
+                        //get the sales man data bythe maneger 
 
                         tf1.getText();
                         tf2.getText();
                         tf3.getText();
 
                     });
-                    B8.setOnAction((ActionEvent event1) -> {
+                    B8.setOnAction((ActionEvent event8) -> {
 
                         l1.setVisible(false);
                         l2.setVisible(false);
@@ -292,12 +309,12 @@ int p;
                     root.add(B7, 4, 13);
                     root.add(B8, 4, 14);
 
-                    B7.setOnAction((ActionEvent event1) -> {
-                        //delete  the sales man data by the maneger
+                    B7.setOnAction((ActionEvent event0) -> {
+                        //delete  the sales man data by the maneger 
                         tf1.getText();
 
                     });
-                    B8.setOnAction((ActionEvent event1) -> {
+                    B8.setOnAction((ActionEvent event7) -> {
 
                         l1.setVisible(false);
                         tf1.setVisible(false);
@@ -400,7 +417,7 @@ int p;
 
                     B7.setOnAction((ActionEvent event1) -> {
 
-                        // update the menu
+                        // update the menu 
                     });
 
                     B8.setOnAction((ActionEvent event1) -> {
@@ -443,7 +460,7 @@ int p;
                     B7.setText("Calculate");
                     B7.setOnAction((ActionEvent event1) -> {
 
-                        //calculate the profit
+                        //calculate the profit 
                     });
                     B8.setOnAction((ActionEvent event1) -> {
 
@@ -460,7 +477,7 @@ int p;
                 break;
 
             case (2):
-                //Customer
+                //Customer 
                 Button MO = new Button();
                 MO.setText("Make order");
 
@@ -483,16 +500,16 @@ int p;
                     root.add(Bp, 4, 12);
 
                     Bp.setOnMouseDragged((javafx.scene.input.MouseEvent e) -> {
-                        //add to cort
+                        //add to cort 
                     });
                     B10.setOnAction((ActionEvent event1) -> {
                         Bp.setOnMouseDragged((javafx.scene.input.MouseEvent e) -> {
-                            //add to cort
+                            //add to cort 
                         });
                         Button B9 = new Button();
                         B9.setText("confirm");
                         B9.setOnAction((ActionEvent event8) -> {
-                            //show the bill
+                            //show the bill 
                             B7.setVisible(false);
                             B10.setVisible(false);
                             Bp.setVisible(false);
@@ -501,7 +518,7 @@ int p;
 
                     B7.setOnAction((ActionEvent event1) -> {
 
-                        //show the bill then hide
+                        //show the bill then hide  
                         //hide the button
                         B7.setVisible(false);
                         B10.setVisible(false);
@@ -517,7 +534,7 @@ int p;
                 break;
 
             case (3):
-                //sales man
+                //sales man 
                 Button BMO = new Button();
                 BMO.setText("Make order");
                 Button PI = new Button();
@@ -638,7 +655,7 @@ int p;
 
                 primaryStage.setTitle("Welcome!");
                 primaryStage.setScene(scene);
-                primaryStage.show(); 
+                primaryStage.show();
                 break;
 
         };
